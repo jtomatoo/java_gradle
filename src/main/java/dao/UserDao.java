@@ -1,18 +1,16 @@
 package dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import domain.User;
 
-public class UserDao {
+public abstract class UserDao {
 
 	public void add(User user) throws ClassNotFoundException, SQLException{
-		Class.forName("com.mysql.cj.jdbc.Driver");
-		Connection c = DriverManager.getConnection("jdbc:mysql://localhost/springbook?useSSL=false&serverTimezone=UTC", "spring", "book");
+		Connection c = getConnection();
 		
 		PreparedStatement ps = c.prepareStatement("insert into user(id, name, password) value(?, ?, ?)");
 		ps.setString(1, user.getId());
@@ -26,8 +24,7 @@ public class UserDao {
 	}
 	
 	public User get(String id) throws ClassNotFoundException, SQLException {
-		Class.forName("com.mysql.cj.jdbc.Driver");
-		Connection c = DriverManager.getConnection("jdbc:mysql://localhost/springbook?useSSL=false&serverTimezone=UTC", "spring", "book");
+		Connection c = getConnection();
 		
 		PreparedStatement ps = c.prepareStatement("select * from user where id = ?");
 		ps.setString(1, id);
@@ -44,5 +41,11 @@ public class UserDao {
 		c.close();
 		
 		return user;
+	}
+	
+	public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
+	
+	protected void hookMethod() {
+		// hook method
 	}
 }

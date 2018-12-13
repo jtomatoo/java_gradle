@@ -2,13 +2,14 @@ package app;
 
 import java.sql.SQLException;
 
+import dao.NUserDao;
 import dao.UserDao;
 import domain.User;
 
 public class Main {
 	
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-		UserDao dao = new UserDao();
+		NUserDao dao = new NUserDao();
 		
 		User user= new User();
 		user.setId("whiteship");

@@ -8,7 +8,7 @@
 
 // Apply the java-library plugin to add support for Java Library
 apply plugin: 'java-library'
-
+apply plugin: 'eclipse'
 // In this section you declare where to find the dependencies of your project
 repositories {
     // Use jcenter for resolving your dependencies.
@@ -22,8 +22,16 @@ dependencies {
     compile 'mysql:mysql-connector-java:8.0.11'
     compile 'org.springframework:spring-context:5.1.1.RELEASE'
     compile 'org.springframework:spring-jdbc:5.1.1.RELEASE'
+    
+    compile 'org.junit:com.springsource.org.junit:4.9.0'
+    compile 'org.springframework:org.springframework.test:3.2.1.RELEASE'
+    
+    compile 'javax.servlet:com.springsource.javax.servlet:2.5.0'
+    compile 'org.springframework:org.springframework.web:3.2.2.RELEASE'
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
 	// compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.11'
+    // https://mvnrepository.com/artifact/org.junit/com.springsource.org.junit
+// testCompile group: 'org.junit', name: 'com.springsource.org.junit', version: '4.9.0'
     
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.

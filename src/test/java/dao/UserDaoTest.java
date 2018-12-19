@@ -22,12 +22,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import domain.User;
 
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(locations="classpath:config/test-applicationContext.xml")
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations="classpath:config/test-applicationContext.xml")
 //@DirtiesContext
 public class UserDaoTest {
 	
-//	@Autowired
+	@Autowired
 	private UserDao dao;
 	
 	private User user1;
@@ -39,13 +39,16 @@ public class UserDaoTest {
 	
 	@Before
 	public void setUp() {
-//		ApplicationContext context = new GenericXmlApplicationContext("classpath:config/applicationContext.xml");
-//		this.dao = this.context.getBean("userDao", UserDao.class);
-		dao = new UserDao();
+//		dao = new UserDao();
+/*		
+		ApplicationContext context = new GenericXmlApplicationContext("classpath:config/applicationContext.xml");
+		this.dao = this.context.getBean("userDao", UserDao.class);
+*/
+/*
 		DataSource dataSource = new SingleConnectionDataSource(
 				"jdbc:mysql://localhost/springbook?useSSL=false&serverTimezone=UTC", "spring", "book", true);
 		dao.setDataSource(dataSource);
-		
+*/
 		this.user1 = new User("gyumee", "박성철", "springno1");
 		this.user2 = new User("leegw7000", "이길원", "springno2");
 		this.user3 = new User("bumjin", "박범진", "springno3");

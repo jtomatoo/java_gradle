@@ -10,9 +10,16 @@
 		<property name="username" value="spring" />
 		<property name="password" value="book" />
 	</bean>
-	<bean id="connectionMaker" class="dao.DConnectionMaker" />
+	<!-- 
+	<bean id="jdbcContext" class="dao.JdbcContext">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	 -->
+	
+	<bean id="dconnectionMaker" class="dao.DConnectionMaker" />
 	<bean id="userDao" class="dao.UserDao">
 		<property name="dataSource" ref="dataSource" />
-		<property name="connectionMaker" ref="connectionMaker" />
+		<!-- <property name="jdbcContext" ref="jdbcContext" />  -->
+		<property name="connectionMaker" ref="dconnectionMaker" />
 	</bean>
 </beans>

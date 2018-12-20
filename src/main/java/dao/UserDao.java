@@ -4,10 +4,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 
 import domain.User;
 
@@ -25,12 +31,13 @@ public class UserDao {
 	
 	private JdbcContext jdbcContext;
 	
+	private JdbcTemplate jdbcTemplate;
+	
 	public UserDao() {
 //		simpleConnectionMaker = new SimpleConnectionMaker();
 //		connectionMaker = new DConnectionMaker();
 //		this.connectionMaker = connectionMaker;
 	}
-	
 
 	public void setConnectionMaker(ConnectionMaker connectionMaker) {
 		this.connectionMaker = connectionMaker;
@@ -40,6 +47,8 @@ public class UserDao {
 		this.jdbcContext = new JdbcContext();
 		this.jdbcContext.setDataSource(dataSource);
 		
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
+		
 		this.dataSource = dataSource;
 	}
 	
@@ -48,10 +57,26 @@ public class UserDao {
 		this.jdbcContext = jdbcContext;
 	}
 */
+	
+	private RowMapper<User> userMapper = 
+		new RowMapper<User>() {
+			@Override
+			public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+				User user=  new User();
+				user.setId(rs.getString("id"));
+				user.setName(rs.getString("name"));
+				user.setPassword(rs.getString("password"));
+				
+				return user;
+			}
+		};
+	
 
 	public void add(final User user) throws ClassNotFoundException, SQLException{
 		
-		this.jdbcContext.executeSql("insert into user(id, name, password) value(?,?,?)", user);
+		this.jdbcTemplate.update("insert into user(id, name, password) values(?,?,?)", user.getId(), user.getName(), user.getPassword());
+		
+//		this.jdbcContext.executeSql("insert into user(id, name, password) value(?,?,?)", user);
 		/*
 		this.jdbcContext.workWithStatementStrategy(new StatementStrategy() {
 			@Override
@@ -147,8 +172,25 @@ public class UserDao {
 	}
 	
 	public User get(String id) throws ClassNotFoundException, SQLException {
+		return this.jdbcTemplate.queryForObject("select * from user where id = ?", new Object[]{id}, this.userMapper);
+		/*
+		return this.jdbcTemplate.queryForObject("select * from user where id =?", 
+				new Object[] {id},
+				new RowMapper<User>() {
+					@Override
+					public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+						User user = new User();
+						user.setId(rs.getString("id"));
+						user.setName(rs.getString("name"));
+						user.setPassword(rs.getString("password"));
+						
+						return user;
+					}
+				});
+		*/
 //		Connection c = simpleConnectionMaker.makeNewConnection();
 //		Connection c = connectionMaker.makeConnection();
+		/*
 		Connection c = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -193,10 +235,23 @@ public class UserDao {
 				}
 			}
 		}
+		*/
 	}
 	
 	public void deleteAll() throws SQLException {
-		this.jdbcContext.executeSql("delete from user");
+		
+		this.jdbcTemplate.update("delete from user");
+		
+		/*
+		this.jdbcTemplate.update(
+			new PreparedStatementCreator() {		
+				@Override
+				public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+					return con.prepareStatement("delete from user");
+				}
+		});
+		*/
+//		this.jdbcContext.executeSql("delete from user");
 		
 //		executeSql("delete from user");
 		/*
@@ -298,6 +353,22 @@ public class UserDao {
 	}
 	
 	public int getCount() throws SQLException {
+		return this.jdbcTemplate.queryForObject("select count(*) from user", Integer.class);
+		/*
+		return this.jdbcTemplate.query(new PreparedStatementCreator() {
+			@Override
+			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+				return con.prepareStatement("select count(*) from user");
+			}
+		}, new ResultSetExtractor<Integer>() {
+			@Override
+			public Integer extractData(ResultSet rs) throws SQLException, DataAccessException {
+				rs.next();
+				return rs.getInt(1);
+			}
+		});
+		*/
+		/*
 		Connection c = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -329,6 +400,25 @@ public class UserDao {
 				}
 			}
 		}
+		*/
+	}
+	
+	public List<User> getAll() throws SQLException {
+		return this.jdbcTemplate.query("select * from user order by id", this.userMapper);
+		/*
+		return this.jdbcTemplate.query("select * from user order by id", 
+					new RowMapper<User>() {
+						@Override
+						public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+							User user = new User();
+							user.setId(rs.getString("id"));
+							user.setName(rs.getString("name"));
+							user.setPassword(rs.getString("password"));
+							
+							return user;
+						}
+		});
+		*/
 	}
 	
 //	public abstract Connection getConnection() throws ClassNotFoundException, SQLException;

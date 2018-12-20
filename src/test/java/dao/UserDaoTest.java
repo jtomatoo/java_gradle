@@ -3,6 +3,7 @@ package dao;
 import static org.junit.Assert.assertThat;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -114,6 +115,39 @@ public class UserDaoTest {
 		assertThat(dao.getCount(), Is.is(0));
 		
 		dao.get("unknown_id");
+	}
+	
+	
+	@Test
+	public void getAll() throws ClassNotFoundException, SQLException {
+		dao.deleteAll();
+		
+		List<User> users0 = dao.getAll();
+		assertThat(users0.size(), Is.is(0));
+		
+		dao.add(user1); // Id: gyumee
+		List<User> users1 = dao.getAll();
+		assertThat(users1.size(), Is.is(1));
+		checkSameUser(user1, users1.get(0));
+		
+		dao.add(user2); // Id: leegw700
+		List<User> users2 = dao.getAll();
+		assertThat(users2.size(), Is.is(2));
+		checkSameUser(user1, users2.get(0));
+		checkSameUser(user2, users2.get(1));
+		
+		dao.add(user3); // Id: bumjin
+		List<User> users3 = dao.getAll();
+		assertThat(users3.size(), Is.is(3));
+		checkSameUser(user3, users3.get(0));
+		checkSameUser(user1, users3.get(1));
+		checkSameUser(user2, users3.get(2));
+	}
+	
+	private void checkSameUser(User user1, User user2) {
+		assertThat(user1.getId(), Is.is(user2.getId()));
+		assertThat(user1.getName(), Is.is(user2.getName()));
+		assertThat(user1.getPassword(), Is.is(user2.getPassword()));
 	}
 
 	/*

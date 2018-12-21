@@ -18,6 +18,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 import com.mysql.cj.exceptions.MysqlErrorNumbers;
 
+import domain.Level;
 import domain.User;
 import exception.DuplicateUserIdException;
 
@@ -70,6 +71,9 @@ public class UserDaoJdbc implements UserDao {
 				user.setId(rs.getString("id"));
 				user.setName(rs.getString("name"));
 				user.setPassword(rs.getString("password"));
+				user.setLevel(Level.valueOf(rs.getInt("level")));
+				user.setLogin(rs.getInt("login"));
+				user.setRecommend(rs.getInt("recommand"));
 				
 				return user;
 			}
@@ -78,7 +82,9 @@ public class UserDaoJdbc implements UserDao {
 
 	public void add(final User user) throws DuplicateKeyException {
 		
-		this.jdbcTemplate.update("insert into user(id, name, password) values(?,?,?)", user.getId(), user.getName(), user.getPassword());
+		this.jdbcTemplate.update("insert into user(id, name, password, level, login, recommand) values(?,?,?,?,?,?)", 
+									user.getId(), user.getName(), user.getPassword(),
+									user.getLevel().initValue(), user.getLogin(), user.getRecommend());
 		
 //		this.jdbcContext.executeSql("insert into user(id, name, password) value(?,?,?)", user);
 		/*
@@ -427,6 +433,13 @@ public class UserDaoJdbc implements UserDao {
 						}
 		});
 		*/
+	}
+	
+	@Override
+	public void update(User user) {
+		this.jdbcTemplate.update("update user set name=?, password=?, level=?, login=?, recommand=? where id=?", 
+								user.getName(), user.getPassword(), user.getLevel().initValue(), user.getLogin(), user.getRecommend(),
+								user.getId());
 	}
 	
 //	public abstract Connection getConnection() throws ClassNotFoundException, SQLException;

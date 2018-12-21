@@ -22,4 +22,8 @@
 		<!-- <property name="jdbcContext" ref="jdbcContext" />  -->
 		<property name="connectionMaker" ref="dconnectionMaker" />
 	</bean>
+	
+	<bean id="userService" class="service.UserService">
+		<property name="userDao" ref="userDao" />
+	</bean>
 </beans>

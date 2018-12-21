@@ -25,6 +25,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import domain.Level;
 import domain.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -57,9 +58,9 @@ public class UserDaoTest {
 				"jdbc:mysql://localhost/springbook?useSSL=false&serverTimezone=UTC", "spring", "book", true);
 		dao.setDataSource(dataSource);
 */
-		this.user1 = new User("gyumee", "박성철", "springno1");
-		this.user2 = new User("leegw7000", "이길원", "springno2");
-		this.user3 = new User("bumjin", "박범진", "springno3");
+		this.user1 = new User("gyumee", "박성철", "springno1", Level.BASIC, 1, 0);
+		this.user2 = new User("leegw7000", "이길원", "springno2", Level.SILVER, 55, 10);
+		this.user3 = new User("bumjin", "박범진", "springno3", Level.GOLD, 100, 40);
 		
 //		System.out.println(this.context);
 //		System.out.println(this);
@@ -82,12 +83,14 @@ public class UserDaoTest {
 		assertThat(dao.getCount(), Is.is(2));
 		
 		User userget1 = dao.get(user1.getId());
-		assertThat(userget1.getName(), Is.is(user1.getName()));
-		assertThat(userget1.getPassword(), Is.is(user1.getPassword()));
+		checkSameUser(userget1, user1);
+//		assertThat(userget1.getName(), Is.is(user1.getName()));
+//		assertThat(userget1.getPassword(), Is.is(user1.getPassword()));
 		
 		User userget2 = dao.get(user2.getId());
-		assertThat(userget2.getName(), Is.is(user2.getName()));
-		assertThat(userget2.getPassword(), Is.is(userget2.getPassword()));
+		checkSameUser(userget2, user2);
+//		assertThat(userget2.getName(), Is.is(user2.getName()));
+//		assertThat(userget2.getPassword(), Is.is(userget2.getPassword()));
 
 	}
 	
@@ -155,6 +158,9 @@ public class UserDaoTest {
 		assertThat(user1.getId(), Is.is(user2.getId()));
 		assertThat(user1.getName(), Is.is(user2.getName()));
 		assertThat(user1.getPassword(), Is.is(user2.getPassword()));
+		assertThat(user1.getLevel(), Is.is(user2.getLevel()));
+		assertThat(user1.getLogin(), Is.is(user2.getLogin()));
+		assertThat(user1.getRecommend(), Is.is(user2.getRecommend()));
 	}
 	
 	@Test(expected=DataAccessException.class)
@@ -178,6 +184,28 @@ public class UserDaoTest {
 			
 			assertThat(set.translate(null, null, sqlEx), Is.is(DuplicateKeyException.class));
 		}
+	}
+	
+	@Test
+	public void update() {
+		dao.deleteAll();
+		
+		dao.add(user1);
+		dao.add(user2);
+		
+		user1.setName("오민규");
+		user1.setPassword("spring006");
+		user1.setLevel(Level.GOLD);
+		user1.setLogin(1000);
+		user1.setRecommend(999);
+		
+		dao.update(user1);
+		
+		User user1update = dao.get(user1.getId());
+		checkSameUser(user1, user1update);
+		
+		User user2same = dao.get(user2.getId());
+		checkSameUser(user2, user2same);
 	}
 	
 	/*

@@ -15,8 +15,8 @@ import com.mysql.cj.jdbc.Driver;
 public class CountingDaoFactory {
 
 	@Bean
-	public UserDao userDao() {
-		UserDao userDao = new UserDao();
+	public UserDaoJdbc userDao() {
+		UserDaoJdbc userDao = new UserDaoJdbc();
 		
 		userDao.setConnectionMaker(connectionMaker());
 //		return new UserDao(connectionMaker());

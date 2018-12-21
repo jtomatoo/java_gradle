@@ -17,7 +17,7 @@
 	 -->
 	
 	<bean id="dconnectionMaker" class="dao.DConnectionMaker" />
-	<bean id="userDao" class="dao.UserDao">
+	<bean id="userDao" class="dao.UserDaoJdbc">
 		<property name="dataSource" ref="dataSource" />
 		<!-- <property name="jdbcContext" ref="jdbcContext" />  -->
 		<property name="connectionMaker" ref="dconnectionMaker" />

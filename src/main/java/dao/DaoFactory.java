@@ -12,9 +12,9 @@ import com.mysql.cj.jdbc.Driver;
 public class DaoFactory {
 
 	@Bean
-	public UserDao userDao() {
+	public UserDaoJdbc userDao() {
 //		ConnectionMaker connectionMaker = connectionMaker();
-		UserDao userDao = new UserDao();
+		UserDaoJdbc userDao = new UserDaoJdbc();
 //		userDao.setConnectionMaker(connectionMaker());
 		userDao.setDataSource(dataSource());
 		

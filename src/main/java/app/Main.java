@@ -3,7 +3,7 @@ package app;
 import java.sql.SQLException;
 
 import dao.NUserDao;
-import dao.UserDao;
+import dao.UserDaoJdbc;
 import domain.User;
 
 public class Main {

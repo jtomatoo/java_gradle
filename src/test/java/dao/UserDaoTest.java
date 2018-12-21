@@ -15,8 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
+import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -30,6 +34,9 @@ public class UserDaoTest {
 	
 	@Autowired
 	private UserDao dao;
+	
+	@Autowired
+	private DataSource dataSource;
 	
 	private User user1;
 	private User user2;
@@ -149,7 +156,30 @@ public class UserDaoTest {
 		assertThat(user1.getName(), Is.is(user2.getName()));
 		assertThat(user1.getPassword(), Is.is(user2.getPassword()));
 	}
+	
+	@Test(expected=DataAccessException.class)
+	public void duplicateKey() {
+		dao.deleteAll();
+		
+		dao.add(user1);
+		dao.add(user1);
+	}
 
+	@Test
+	public void sqlExceptionTranslate() {
+		dao.deleteAll();
+		
+		try {
+			dao.add(user1);
+			dao.add(user1);
+		} catch (DuplicateKeyException ex) {
+			SQLException sqlEx = (SQLException) ex.getRootCause();
+			SQLExceptionTranslator set = new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
+			
+			assertThat(set.translate(null, null, sqlEx), Is.is(DuplicateKeyException.class));
+		}
+	}
+	
 	/*
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		

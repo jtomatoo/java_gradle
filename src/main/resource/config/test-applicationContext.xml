@@ -22,8 +22,16 @@
 		<!-- <property name="jdbcContext" ref="jdbcContext" />  -->
 		<property name="connectionMaker" ref="dconnectionMaker" />
 	</bean>
+	<bean id="defaultUserLevelUpgradePolicy" class="service.DefaultUserLevelUpgradePolicy"/>
+	
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
 	
 	<bean id="userService" class="service.UserService">
 		<property name="userDao" ref="userDao" />
+		<!--<property name="dataSource" ref="dataSource" /> -->
+		<property name="userLevelUpgradePolicy" ref="defaultUserLevelUpgradePolicy" />
+		<property name="transactionManager" ref="transactionManager"></property>
 	</bean>
 </beans>

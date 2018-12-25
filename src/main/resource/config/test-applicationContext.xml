@@ -28,10 +28,19 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 	
+	<!-- 
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="mail.server.com" />
+	</bean>
+	 -->
+	<bean id="mailSender" class="service.mail.DummyMailSender" />
+	 
+	
 	<bean id="userService" class="service.UserService">
 		<property name="userDao" ref="userDao" />
 		<!--<property name="dataSource" ref="dataSource" /> -->
 		<property name="userLevelUpgradePolicy" ref="defaultUserLevelUpgradePolicy" />
 		<property name="transactionManager" ref="transactionManager"></property>
+		<property name="mailSender" ref="mailSender"></property>
 	</bean>
 </beans>

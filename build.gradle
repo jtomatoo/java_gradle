@@ -28,10 +28,14 @@ dependencies {
     
     compile 'javax.servlet:com.springsource.javax.servlet:2.5.0'
     compile 'org.springframework:org.springframework.web:3.2.2.RELEASE'
+    
+    compile 'javax.activation:com.springsource.javax.activation:1.1.0'
+    compile 'javax.mail:com.springsource.javax.mail:1.4.0'
+    compile 'org.springframework:org.springframework.context.support:3.1.3.RELEASE'
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
 	// compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.11'
     // https://mvnrepository.com/artifact/org.junit/com.springsource.org.junit
-// testCompile group: 'org.junit', name: 'com.springsource.org.junit', version: '4.9.0'
+	// testCompile group: 'org.junit', name: 'com.springsource.org.junit', version: '4.9.0'
     
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.

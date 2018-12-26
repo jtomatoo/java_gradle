@@ -1,4 +1,4 @@
-package service;
+package service.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 

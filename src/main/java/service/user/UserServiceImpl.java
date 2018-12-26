@@ -1,4 +1,4 @@
-package service;
+package service.user;
 
 import java.sql.Connection;
 import java.util.List;
@@ -20,7 +20,7 @@ import dao.UserDao;
 import domain.Level;
 import domain.User;
 
-public class UserService {
+public class UserServiceImpl implements UserService {
 
 	public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
 	public static final int MIN_RECOMMEND_FOR_GOLD = 30;
@@ -51,7 +51,7 @@ public class UserService {
 	}
 
 	public void upgradeLevels() throws Exception {
-		TransactionStatus status = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
+//		TransactionStatus status = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
 		
 		/*
 		TransactionSynchronizationManager.initSynchronization();
@@ -59,6 +59,8 @@ public class UserService {
 		c.setAutoCommit(false);
 		*/
 		try {
+//			upgradeLevelsInternal();
+			
 			List<User> users=  userDao.getAll();
 			for (User user : users) {
 				if(/*userLevelUpgradePolicy.canUpgradeLevel(user)*/canUpgradeLevel(user)) {
@@ -66,10 +68,11 @@ public class UserService {
 					upgradeLevel(user);
 				}
 			}
-			this.transactionManager.commit(status);
+			
+//			this.transactionManager.commit(status);
 //			c.commit();
 		} catch (Exception e) {
-			this.transactionManager.rollback(status);
+//			this.transactionManager.rollback(status);
 //			c.rollback();
 			throw e;
 		} finally {
@@ -100,6 +103,15 @@ public class UserService {
 			}
 		}
 		*/
+	}
+	
+	private void upgradeLevelsInternal() {
+		List<User> users = userDao.getAll();
+		for (User user : users) {
+			if(canUpgradeLevel(user)) {
+				upgradeLevel(user);
+			}
+		}
 	}
 
 	private boolean canUpgradeLevel(User user) {

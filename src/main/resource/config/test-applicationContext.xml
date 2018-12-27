@@ -22,7 +22,8 @@
 		<!-- <property name="jdbcContext" ref="jdbcContext" />  -->
 		<property name="connectionMaker" ref="dconnectionMaker" />
 	</bean>
-	<bean id="defaultUserLevelUpgradePolicy" class="service.DefaultUserLevelUpgradePolicy"/>
+	
+	<bean id="defaultUserLevelUpgradePolicy" class="service.user.DefaultUserLevelUpgradePolicy"/>
 	
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
@@ -36,11 +37,62 @@
 	<bean id="mailSender" class="service.mail.DummyMailSender" />
 	 
 	
-	<bean id="userService" class="service.UserService">
+	<bean id="userService" class="service.user.UserServiceImpl">
 		<property name="userDao" ref="userDao" />
 		<!--<property name="dataSource" ref="dataSource" /> -->
 		<property name="userLevelUpgradePolicy" ref="defaultUserLevelUpgradePolicy" />
 		<property name="transactionManager" ref="transactionManager"></property>
 		<property name="mailSender" ref="mailSender"></property>
 	</bean>
+	
+	
+	<bean id="testUserService" class="service.UserServiceTest$TestUserServiceImpl"
+		parent="userService"/>
+		
+	<!-- 
+	<bean id="userService" class="service.user.UserServiceTx">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="userService" ref="userServiceImpl"/>
+	</bean>
+	 -->
+	 <!-- 
+	 <bean id="userService" class="factory.TxProxyFactoryBean">
+	 	<property name="target" ref="userServiceImpl"/>
+	 	<property name="transactionManager" ref="transactionManager" />
+	 	<property name="pattern" value="upgradeLevels"/>
+	 	<property name="serviceInterface" value="service.user.UserService" />
+	 </bean>
+	  -->
+	  <!-- 
+	  <bean id="userService" class="org.springframework.aop.framework.ProxyFactoryBean">
+	  	<property name="target" ref="userServiceImpl" />
+	  	<property name="interceptorNames">
+	  		<list>
+	  			<value>transactionAdvisor</value>
+	  		</list>
+	  	</property>
+	  </bean>
+	   -->
+	 <bean id="transactionAdvice" class="service.user.TransactionAdvice">
+	 	<property name="transactionManager" ref="transactionManager"/>
+	 </bean>
+	 
+	 <!-- 
+	 <bean id="transactionPointcut" class="org.springframework.aop.support.NameMatchMethodPointcut">
+	 	<property name="mappedName" value="upgrade*"/>
+	 </bean>
+	  -->
+	 
+	 <bean id="transactionPointcut" class="service.proxy.NameMatchClassMethodPointcut">
+	 	<property name="mappedClassName" value="*ServiceImpl" />
+	 	<property name="mappedName" value="upgrade*" />
+	 </bean>
+	 
+	 <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+	 	<property name="advice" ref="transactionAdvice"/>
+	 	<property name="pointcut" ref="transactionPointcut"/>
+	 </bean>
+	 
+	 <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+	 
 </beans>

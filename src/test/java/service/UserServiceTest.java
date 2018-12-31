@@ -24,12 +24,17 @@ import org.mockito.internal.verification.Times;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import dao.UserDao;
 import domain.Level;
@@ -99,6 +104,16 @@ public class UserServiceTest {
 			
 			super.upgradeLevel(user);
 		}
+		
+		@Override
+		public List<User> getAll() {
+			for (User user : super.getAll()) {
+				super.update(user);
+			}
+			
+			return null;
+		}
+		
 	}
 	
 	public static class TestUserServiceException extends RuntimeException {
@@ -322,6 +337,43 @@ public class UserServiceTest {
 	@Test
 	public void advisorAutoProxyCreator() {
 		assertThat(testUserService, Is.is(java.lang.reflect.Proxy.class));
+	}
+	
+	@Test(expected=TransientDataAccessResourceException.class)
+	public void readOnlyTransactionAttribute() {
+		testUserService.getAll();
+	}
+	
+	/*@Test
+	public void transactionSync() {
+		
+//		userService.deleteAll();
+		userDao.deleteAll();
+		assertThat(userDao.getCount(), Is.is(0));
+		
+		DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+//		txDefinition.setReadOnly(true);
+		
+		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+		
+		userService.add(users.get(0));
+		userService.add(users.get(1));
+		assertThat(userDao.getCount(), Is.is(2));
+		
+		transactionManager.commit(txStatus);
+//		transactionManager.rollback(txStatus);
+		assertThat(userDao.getCount(), Is.is(0));
+		
+	}
+	*/
+	@Test
+	@Transactional
+	@Rollback(false)
+	public void transactionSync() {
+		userService.deleteAll();
+		
+		userService.add(users.get(0));
+		userService.add(users.get(1));
 	}
 	
 }

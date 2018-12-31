@@ -13,12 +13,14 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import dao.UserDao;
 import domain.Level;
 import domain.User;
+
 
 public class UserServiceImpl implements UserService {
 
@@ -160,6 +162,26 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		userDao.add(user);
+	}
+	
+	@Override
+	public User get(String id) {
+		return userDao.get(id);
+	}
+
+	@Override
+	public List<User> getAll() {
+		return userDao.getAll();
+	}
+
+	@Override
+	public void deleteAll() {
+		userDao.deleteAll();
+	}
+
+	@Override
+	public void update(User user) {
+		userDao.update(user);
 	}
 	
 }

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -21,6 +22,7 @@ import com.mysql.cj.exceptions.MysqlErrorNumbers;
 import domain.Level;
 import domain.User;
 import exception.DuplicateUserIdException;
+import service.sql.SqlService;
 
 public class UserDaoJdbc implements UserDao {
 	
@@ -57,12 +59,60 @@ public class UserDaoJdbc implements UserDao {
 		this.dataSource = dataSource;
 	}
 	
-/*
+	private SqlService sqlService;
+	
+	public void setSqlService(SqlService sqlService) {
+		this.sqlService = sqlService;
+	}
+
+	/*
 	public void setJdbcContext(JdbcContext jdbcContext) {
 		this.jdbcContext = jdbcContext;
 	}
 */
+	/*
+	private String sqlAdd;
 	
+	public void setSqlAdd(String sqlAdd) {
+		this.sqlAdd = sqlAdd;
+	}
+	
+	private String sqlGet;
+
+	public void setSqlGet(String sqlGet) {
+		this.sqlGet = sqlGet;
+	}
+	
+	private String sqlGetAll;
+
+	public void setSqlGetAll(String sqlGetAll) {
+		this.sqlGetAll = sqlGetAll;
+	}
+	
+	private String sqlUpdate;
+
+	public void setSqlUpdate(String sqlUpdate) {
+		this.sqlUpdate = sqlUpdate;
+	}
+	
+	private String sqlDelete;
+
+	public void setSqlDelete(String sqlDelete) {
+		this.sqlDelete = sqlDelete;
+	}
+	
+	private String sqlGetCount;
+
+	public void setSqlGetCount(String sqlGetCount) {
+		this.sqlGetCount = sqlGetCount;
+	}
+*/
+	private Map<String, String> sqlMap;
+	
+	public void setSqlMap(Map<String, String> sqlMap) {
+		this.sqlMap = sqlMap;
+	}
+
 	private RowMapper<User> userMapper = 
 		new RowMapper<User>() {
 			@Override
@@ -82,11 +132,23 @@ public class UserDaoJdbc implements UserDao {
 	
 
 	public void add(final User user) throws DuplicateKeyException {
+		this.jdbcTemplate.update(this.sqlService.getSql("userAdd"), user.getId(), user.getName(), user.getPassword(),
+				user.getLevel().initValue(), user.getLogin(), user.getRecommend(), user.getEmail());
 		
+		/*
+		this.jdbcTemplate.update(this.sqlMap.get("add"), user.getId(), user.getName(), user.getPassword(),
+				user.getLevel().initValue(), user.getLogin(), user.getRecommend(), user.getEmail());
+		*/
+		/*
+		this.jdbcTemplate.update(this.sqlAdd, user.getId(), user.getName(), user.getPassword(),
+				user.getLevel().initValue(), user.getLogin(), user.getRecommend(), user.getEmail());
+		*/
+		
+		/*
 		this.jdbcTemplate.update("insert into user(id, name, password, level, login, recommand, email) values(?,?,?,?,?,?,?)", 
 									user.getId(), user.getName(), user.getPassword(),
 									user.getLevel().initValue(), user.getLogin(), user.getRecommend(), user.getEmail());
-		
+		*/
 //		this.jdbcContext.executeSql("insert into user(id, name, password) value(?,?,?)", user);
 		/*
 		this.jdbcContext.workWithStatementStrategy(new StatementStrategy() {
@@ -187,7 +249,15 @@ public class UserDaoJdbc implements UserDao {
 	}
 	
 	public User get(String id) {
-		return this.jdbcTemplate.queryForObject("select * from user where id = ?", new Object[]{id}, this.userMapper);
+		
+		return this.jdbcTemplate.queryForObject(this.sqlService.getSql("userGet"), new Object[] {id}, this.userMapper);
+		
+//		return this.jdbcTemplate.queryForObject(this.sqlMap.get("get"), new Object[] {id}, this.userMapper);
+		
+//		return this.jdbcTemplate.queryForObject(this.sqlGet, new Object[] {id}, this.userMapper);
+		
+//		return this.jdbcTemplate.queryForObject("select * from user where id = ?", new Object[]{id}, this.userMapper);
+		
 		/*
 		return this.jdbcTemplate.queryForObject("select * from user where id =?", 
 				new Object[] {id},
@@ -255,7 +325,13 @@ public class UserDaoJdbc implements UserDao {
 	
 	public void deleteAll() {
 		
-		this.jdbcTemplate.update("delete from user");
+		this.jdbcTemplate.update(this.sqlService.getSql("userDeleteAll"));
+		
+//		this.jdbcTemplate.update(this.sqlMap.get("deleteAll"));
+		
+//		this.jdbcTemplate.update(this.sqlDelete);
+		
+//		this.jdbcTemplate.update("delete from user");
 		
 		/*
 		this.jdbcTemplate.update(
@@ -368,7 +444,15 @@ public class UserDaoJdbc implements UserDao {
 	}
 	
 	public int getCount() {
-		return this.jdbcTemplate.queryForObject("select count(*) from user", Integer.class);
+		
+		return this.jdbcTemplate.queryForObject(this.sqlService.getSql("userGetCount"), Integer.class);
+		
+//		return this.jdbcTemplate.queryForObject(this.sqlMap.get("getCount"), Integer.class);
+		
+//		return this.jdbcTemplate.queryForObject(this.sqlGetCount, Integer.class);
+		
+//		return this.jdbcTemplate.queryForObject("select count(*) from user", Integer.class);
+		
 		/*
 		return this.jdbcTemplate.query(new PreparedStatementCreator() {
 			@Override
@@ -419,7 +503,15 @@ public class UserDaoJdbc implements UserDao {
 	}
 	
 	public List<User> getAll() {
-		return this.jdbcTemplate.query("select * from user order by id", this.userMapper);
+		
+		return this.jdbcTemplate.query(this.sqlService.getSql("userGetAll"), this.userMapper);
+		
+//		return this.jdbcTemplate.query(this.sqlMap.get("getAll"), this.userMapper);
+		
+//		return this.jdbcTemplate.query(this.sqlGetAll, this.userMapper);
+		
+//		return this.jdbcTemplate.query("select * from user order by id", this.userMapper);
+		
 		/*
 		return this.jdbcTemplate.query("select * from user order by id", 
 					new RowMapper<User>() {
@@ -438,10 +530,27 @@ public class UserDaoJdbc implements UserDao {
 	
 	@Override
 	public void update(User user) {
+		
+		this.jdbcTemplate.update(this.sqlService.getSql("userUpdate"), user.getName(), user.getPassword(),  
+				user.getLevel().initValue(), user.getLogin(), user.getRecommend(), user.getEmail(),
+				user.getId());
+		
+		/*
+		this.jdbcTemplate.update(this.sqlMap.get("update"), user.getName(), user.getPassword(), 
+				user.getLevel().initValue(), user.getLogin(), user.getRecommend(), user.getEmail(),
+				user.getId());
+		*/
+		/*
+		this.jdbcTemplate.update(this.sqlUpdate, user.getName(), user.getPassword(), 
+				user.getLevel().initValue(), user.getLogin(), user.getRecommend(), user.getEmail(),
+				user.getId());
+		*/
+		/*
 		this.jdbcTemplate.update("update user set name=?, password=?, level=?, login=?, recommand=?, email=? where id=?", 
 								user.getName(), user.getPassword(), 
 								user.getLevel().initValue(), user.getLogin(), user.getRecommend(), user.getEmail(),
 								user.getId());
+		*/
 	}
 	
 //	public abstract Connection getConnection() throws ClassNotFoundException, SQLException;

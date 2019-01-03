@@ -4,6 +4,7 @@
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 				http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 				http://www.springframework.org/schema/aop
@@ -11,10 +12,17 @@
 				http://www.springframework.org/schema/context
 				http://www.springframework.org/schema/context/spring-context-3.0.xsd
 				http://www.springframework.org/schema/tx
-				http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+				http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+				http://www.springframework.org/schema/jdbc
+				http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
 	
 	<tx:annotation-driven/>
 	<context:annotation-config />
+	
+	<jdbc:embedded-database id="embeddedDatabase" type="H2">
+		<jdbc:script location="classpath:sql/schema.sql"/>
+	</jdbc:embedded-database>
+	
 	
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
 		<property name="driverClass" value="com.mysql.cj.jdbc.Driver" />
@@ -48,8 +56,16 @@
 	 <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
 		<property name="contextPath" value="service.sql.jaxb"/>
 	</bean>
+	<!-- 
+	<bean id="sqlRegistry" class="service.sql.ConcurrentHashMapSqlRegistry">
+	 </bean>
+	 -->
+	 <bean id="sqlRegistry" class="service.sql.EmbeddedDbSqlRegistry">
+	 	<property name="dataSource" ref="embeddedDatabase"/>
+	 </bean>
 	 <bean id="sqlService" class="service.sql.OxmSqlService">
 	 	<property name="unmarshaller" ref="unmarshaller" />
+	 	<property name="sqlRegistry" ref="sqlRegistry" />
 	 	<!-- <property name="sqlmap" value="classpath:dao/sqlmap.xml/"></property> -->
 	 </bean>
 

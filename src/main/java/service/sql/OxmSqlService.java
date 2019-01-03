@@ -1,6 +1,12 @@
 package service.sql;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.xml.transform.Source;
@@ -57,7 +63,7 @@ public class OxmSqlService implements SqlService {
 			this.sqlmapFile = sqlmapFile;
 		}
 		*/
-		private Resource sqlmap = new ClassPathResource("sqlamp.xml", UserDao.class);
+		private Resource sqlmap = new ClassPathResource("sqlmap.xml", UserDao.class);
 
 		public void setSqlmap(Resource sqlmap) {
 			this.sqlmap = sqlmap;

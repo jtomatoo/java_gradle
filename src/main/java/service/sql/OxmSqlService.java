@@ -63,7 +63,8 @@ public class OxmSqlService implements SqlService {
 			this.sqlmapFile = sqlmapFile;
 		}
 		*/
-		private Resource sqlmap = new ClassPathResource("sqlmap.xml", UserDao.class);
+//		private Resource sqlmap = new ClassPathResource("sqlmap.xml", UserDao.class);
+		private Resource sqlmap = new ClassPathResource("/sqlmap.xml");
 
 		public void setSqlmap(Resource sqlmap) {
 			this.sqlmap = sqlmap;

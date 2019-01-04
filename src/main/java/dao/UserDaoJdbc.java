@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -16,6 +17,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import com.mysql.cj.exceptions.MysqlErrorNumbers;
 
@@ -24,6 +27,8 @@ import domain.User;
 import exception.DuplicateUserIdException;
 import service.sql.SqlService;
 
+//@Component
+@Repository("userDao")
 public class UserDaoJdbc implements UserDao {
 	
 //	private SimpleConnectionMaker simpleConnectionMaker;
@@ -50,21 +55,23 @@ public class UserDaoJdbc implements UserDao {
 		this.connectionMaker = connectionMaker;
 	}
 	
+	@Autowired
 	public void setDataSource(DataSource dataSource) {
-		this.jdbcContext = new JdbcContext();
-		this.jdbcContext.setDataSource(dataSource);
+//		this.jdbcContext = new JdbcContext();
+//		this.jdbcContext.setDataSource(dataSource);
 		
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 		
-		this.dataSource = dataSource;
+//		this.dataSource = dataSource;
 	}
 	
+	@Autowired
 	private SqlService sqlService;
-	
+	/*
 	public void setSqlService(SqlService sqlService) {
 		this.sqlService = sqlService;
 	}
-
+*/
 	/*
 	public void setJdbcContext(JdbcContext jdbcContext) {
 		this.jdbcContext = jdbcContext;

@@ -16,21 +16,21 @@
 				http://www.springframework.org/schema/jdbc
 				http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
 	
-	<!-- <tx:annotation-driven/> -->
-	<!-- <context:annotation-config /> -->
-	<!-- 
+	<tx:annotation-driven/>
+	<context:annotation-config />
+	
 	<jdbc:embedded-database id="embeddedDatabase" type="H2">
 		<jdbc:script location="classpath:sql/schema.sql"/>
 	</jdbc:embedded-database>
-	 -->
-	<!-- 
+	
+	
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
 		<property name="driverClass" value="com.mysql.cj.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://localhost/springbook?useSSL=false&amp;serverTimezone=UTC" />
 		<property name="username" value="spring" />
 		<property name="password" value="book" />
 	</bean>
-	 -->
+	
 	<!-- 
 	<bean id="jdbcContext" class="dao.JdbcContext">
 		<property name="dataSource" ref="dataSource"/>
@@ -53,24 +53,22 @@
 	</bean>
 	 -->
 	 
-	 
+	 <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+		<property name="contextPath" value="service.sql.jaxb"/>
+	</bean>
 	<!-- 
 	<bean id="sqlRegistry" class="service.sql.ConcurrentHashMapSqlRegistry">
 	 </bean>
 	 -->
-<!-- 	 
 	 <bean id="sqlRegistry" class="service.sql.EmbeddedDbSqlRegistry">
 	 	<property name="dataSource" ref="embeddedDatabase"/>
 	 </bean>
-	 <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-		<property name="contextPath" value="service.sql.jaxb"/>
-	</bean>
 	 <bean id="sqlService" class="service.sql.OxmSqlService">
 	 	<property name="unmarshaller" ref="unmarshaller" />
 	 	<property name="sqlRegistry" ref="sqlRegistry" />
-	 	<property name="sqlmap" value="classpath:dao/sqlmap.xml/"></property>
+	 	<!-- <property name="sqlmap" value="classpath:dao/sqlmap.xml/"></property> -->
 	 </bean>
- -->
+
 	 <!-- 
 	 <bean id="sqlService" class="service.sql.DefaultSqlService" />
 	  -->
@@ -92,13 +90,12 @@
 		<property name="sqlmapFile" value="sqlmap.xml"></property>
 	</bean>
 	 -->
-	 <!-- 
 	<bean id="userDao" class="dao.UserDaoJdbc">
 		<property name="dataSource" ref="dataSource" />
-		<property name="jdbcContext" ref="jdbcContext" /> 
+		<!-- <property name="jdbcContext" ref="jdbcContext" />  -->
 		<property name="connectionMaker" ref="dconnectionMaker" />
 		<property name="sqlService" ref="sqlService" />
-		
+		<!-- 
 		<property name="sqlMap">
 			<map>
 				<entry key="add" value="insert into user(id, name, password, level, login, recommand, email) values(?,?,?,?,?,?,?)"></entry>
@@ -109,45 +106,44 @@
 				<entry key="update" value="update user set name=?, password=?, level=?, login=?, recommand=?, email=? where id=?"></entry>
 			</map>
 		</property>
-		
-		
+		 -->
+		<!-- 
 		<property name="sqlAdd" value="insert into user(id, name, password, level, login, recommand, email) values(?,?,?,?,?,?,?)" />
 		<property name="sqlGet" value="select * from user where id = ?" />
 		<property name="sqlDelete" value="delete from user"></property>
 		<property name="sqlGetCount" value="select count(*) from user"></property>
 		<property name="sqlGetAll" value="select * from user order by id" />
 		<property name="sqlUpdate" value="update user set name=?, password=?, level=?, login=?, recommand=?, email=? where id=?" />
-		
+		 -->
 	</bean>
 	
-	 -->
+	
 	<bean id="defaultUserLevelUpgradePolicy" class="service.user.DefaultUserLevelUpgradePolicy"/>
-	<!-- 
+	
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
-	 -->
+	
 	<!-- 
 	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
 		<property name="host" value="mail.server.com" />
 	</bean>
 	 -->
-	 <!-- 
 	<bean id="mailSender" class="service.mail.DummyMailSender" />
-	  -->
-	<!-- 
+	 
+	
 	<bean id="userService" class="service.user.UserServiceImpl">
 		<property name="userDao" ref="userDao" />
-		<property name="dataSource" ref="dataSource" />
+		<!--<property name="dataSource" ref="dataSource" /> -->
 		<property name="userLevelUpgradePolicy" ref="defaultUserLevelUpgradePolicy" />
 		<property name="transactionManager" ref="transactionManager"></property>
 		<property name="mailSender" ref="mailSender"></property>
 	</bean>
-	 -->
-	<!-- 
+	
+	
 	<bean id="testUserService" class="service.UserServiceTest$TestUserServiceImpl"
 		parent="userService"/>
-	 -->	
+		
 	<!-- 
 	<bean id="userService" class="service.user.UserServiceTx">
 		<property name="transactionManager" ref="transactionManager" />

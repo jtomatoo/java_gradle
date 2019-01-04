@@ -23,12 +23,14 @@ import org.mockito.internal.util.MockUtil;
 import org.mockito.internal.verification.Times;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -36,6 +38,8 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import app.AppContext;
+import app.TestAppContext;
 import dao.UserDao;
 import domain.Level;
 import domain.User;
@@ -49,7 +53,10 @@ import service.user.UserServiceTx;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext
-@ContextConfiguration(locations="classpath:config/test-applicationContext.xml")
+@ActiveProfiles("test")
+@ContextConfiguration(classes= AppContext.class)
+//@ContextConfiguration(classes= {AppContext.class, TestAppContext.class})
+//@ContextConfiguration(locations="classpath:config/test-applicationContext.xml")
 public class UserServiceTest {
 
 	public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
@@ -73,14 +80,17 @@ public class UserServiceTest {
 	@Autowired
 	private DataSource dataSource;
 	
-	@Autowired
-	private UserLevelUpgradePolicy userLevelUpgradePolicy;
+//	@Autowired
+//	private UserLevelUpgradePolicy userLevelUpgradePolicy;
 	
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 	
 	@Autowired
 	private MailSender mailSender;
+	
+	@Autowired
+	private DefaultListableBeanFactory bf;
 	
 	private List<User> users;
 	
@@ -374,6 +384,13 @@ public class UserServiceTest {
 		
 		userService.add(users.get(0));
 		userService.add(users.get(1));
+	}
+	
+	@Test
+	public void beans() {
+		for (String n : bf.getBeanDefinitionNames()) {
+			System.out.println(n + "\t" + bf.getBean(n).getClass().getName());
+		}
 	}
 	
 }

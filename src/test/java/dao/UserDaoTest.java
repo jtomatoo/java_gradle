@@ -22,14 +22,20 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import app.AppContext;
+import app.TestAppContext;
 import domain.Level;
 import domain.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="classpath:config/test-applicationContext.xml")
+@ActiveProfiles("test")
+@ContextConfiguration(classes= AppContext.class)
+//@ContextConfiguration(classes= {AppContext.class, TestAppContext.class})
+//@ContextConfiguration(locations="classpath:config/test-applicationContext.xml")
 //@DirtiesContext
 public class UserDaoTest {
 	

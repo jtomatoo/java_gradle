@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
@@ -31,6 +33,7 @@ import com.mysql.cj.jdbc.Driver;
 
 import app.anno.EnableSqlService;
 import app.config.SqlMapConfig;
+import dao.ServiceMaker;
 import dao.UserDao;
 import dao.UserDaoJdbc;
 import service.UserServiceTest.TestUserServiceImpl;
@@ -46,7 +49,9 @@ import service.user.UserSqlMapConfig;
 @Configuration
 @EnableTransactionManagement
 @EnableSqlService
-@ComponentScan(basePackages="dao")
+//@ComponentScan(basePackages="./", excludeFilters=@Filter(type=FilterType.ASSIGNABLE_TYPE, value=AppContext.class))
+//@ComponentScan(basePackages="./", excludeFilters=@Filter(Configuration.class))
+@ComponentScan(/*basePackages="dao"*/basePackageClasses=ServiceMaker.class)
 //@Import({SqlServiceContext.class, 
 //		/*AppContext.ProductionAppContext.class, AppContext.TestAppContext.class*/})
 //@ImportResource("classpath:config/test-applicationContext.xml")

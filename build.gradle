@@ -28,6 +28,7 @@ dependencies {
     
     compile 'javax.servlet:com.springsource.javax.servlet:2.5.0'
     compile 'org.springframework:org.springframework.web:3.2.2.RELEASE'
+    compile 'org.springframework:spring-webmvc:3.2.4.RELEASE'
     
     compile 'javax.activation:com.springsource.javax.activation:1.1.0'
     compile 'javax.mail:com.springsource.javax.mail:1.4.0'
@@ -35,6 +36,8 @@ dependencies {
     compile 'org.mockito:mockito-core:2.21.0'
     compile 'org.aspectj:com.springsource.org.aspectj.tools:1.6.12.RELEASE'
     compile 'org.codehaus.castor:com.springsource.org.castor:1.2.0'
+    
+    compile 'org.springframework:org.springframework.oxm:3.2.2.RELEASE'
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
 	// compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.11'
     // https://mvnrepository.com/artifact/org.junit/com.springsource.org.junit

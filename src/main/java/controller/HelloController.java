@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
 import domain.HelloSpring;
 
@@ -23,6 +24,7 @@ public class HelloController implements Controller {
 		
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("message", message);
+	
 		
 		return new ModelAndView("/WEB-INF/view/hello.jsp", model);
 	}

@@ -16,7 +16,6 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockServletConfig;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.FrameworkServlet;
 import org.springframework.web.servlet.ModelAndView;
 
 public abstract class AbstractDispatcherServletTest implements AfterRunService {

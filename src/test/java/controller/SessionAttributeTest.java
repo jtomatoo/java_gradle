@@ -11,8 +11,12 @@ import javax.servlet.http.HttpSession;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.core.Is;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CharsetEditor;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -27,6 +31,7 @@ import domain.Member;
 import servlet.AbstractDispatcherServletTest;
 import util.LevelPropertyEditor;
 import util.MinMaxPropertyEditor;
+import util.UserValidator;
 
 public class SessionAttributeTest extends AbstractDispatcherServletTest {
 
@@ -76,14 +81,36 @@ public class SessionAttributeTest extends AbstractDispatcherServletTest {
 		assertThat(session.getAttribute("user"), Is.is(CoreMatchers.nullValue()));
 	}
 	
+	@Test
+	public void simpleConversion() {
+		setLocations("classpath:WEB-INF/applicationContext.xml");
+	}
+	
+	@Controller
+	public static class SearchController {
+		
+		@Autowired
+		private ConversionService conversionService;
+		
+		@InitBinder
+		public void initBinder(WebDataBinder dataBinder) {
+			dataBinder.setConversionService(conversionService);
+		}
+	}
+	
+	
 	@Controller
 	@SessionAttributes("user")
 	public static class UserController {
+		
+		@Autowired
+		private UserValidator validator;
 		
 		@InitBinder
 		public void initBinder(WebDataBinder dataBinder) {
 			dataBinder.registerCustomEditor(Level.class, new LevelPropertyEditor());
 			dataBinder.registerCustomEditor(int.class, "age", new MinMaxPropertyEditor(0, 200));
+			dataBinder.setValidator(this.validator);
 		}
 		
 		@RequestMapping(value="/user/edit", method=RequestMethod.GET)
@@ -96,8 +123,19 @@ public class SessionAttributeTest extends AbstractDispatcherServletTest {
 			sessionStatus.setComplete();
 		}
 		
+		/*
 		@RequestMapping("/add")
-		public void add(@ModelAttribute Member member) {
+		public void add(@ModelAttribute User user, BindingResult result) {
+			this.validator.validate(user, result);
+			if(result.hasErrors()) {
+				
+			} else {
+				
+			}
+		}
+		 */
+		@RequestMapping("/add")
+		public void add(@ModelAttribute @Validated User user, BindingResult result) {
 			
 		}
 	}

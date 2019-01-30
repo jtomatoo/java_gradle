@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
 import domain.Level;
-import domain.Member;
+import domain.shop.Member;
 import servlet.AbstractDispatcherServletTest;
 import util.LevelPropertyEditor;
 import util.MinMaxPropertyEditor;

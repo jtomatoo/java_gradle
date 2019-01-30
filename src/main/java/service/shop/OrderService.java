@@ -16,6 +16,9 @@ import domain.shop.OrderItem;
 import domain.shop.OrderSearch;
 import repository.MemberRepository;
 import repository.OrderRepository;
+import repository.springdata.OrderRepositoryInterface;
+
+import static org.springframework.data.jpa.domain.Specifications.*;
 
 @Service
 @Transactional
@@ -29,6 +32,10 @@ public class OrderService {
 	
 	@Autowired
 	private ItemService itemService;
+	
+	@Autowired
+	private OrderRepositoryInterface orderRepositorySd;
+	
 	
 	/**
 	 * ¡÷πÆ
@@ -73,6 +80,8 @@ public class OrderService {
 	 * @return
 	 */
 	public List<Order> findOrders(OrderSearch orderSearch) {
-		return orderRepository.findAll(orderSearch);
+//		return orderRepository.findAll(orderSearch);
+		return orderRepositorySd.findAll(orderSearch.toSpecification());
 	}
+	
 }

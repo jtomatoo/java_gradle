@@ -1,10 +1,14 @@
 package domain.shop;
 
+import org.springframework.data.jpa.domain.Specification;
+
+import domain.shop.spec.OrderSpec;
+
 public class OrderSearch {
 	
 	private String memberName;
 	private OrderStatus orderStatus;
-	
+
 	
 	public String getMemberName() {
 		return memberName;
@@ -17,5 +21,9 @@ public class OrderSearch {
 	}
 	public void setOrderStatus(OrderStatus orderStatus) {
 		this.orderStatus = orderStatus;
+	}
+
+	public Specification<Order> toSpecification() {
+		return Specification.where(OrderSpec.memberNameLike(memberName)).and(OrderSpec.orderStatusEq(orderStatus));
 	}
 }

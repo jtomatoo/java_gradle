@@ -2,6 +2,7 @@ package service.shop;
 
 import java.util.List;
 
+import javax.persistence.EntityGraph;
 import javax.transaction.Transactional;
 
 import org.junit.Test;

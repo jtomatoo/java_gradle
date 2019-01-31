@@ -1,10 +1,14 @@
 package repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Subgraph;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -18,6 +22,7 @@ import org.springframework.util.StringUtils;
 
 import domain.shop.Member;
 import domain.shop.Order;
+import domain.shop.OrderItem;
 import domain.shop.OrderSearch;
 
 @Repository
@@ -59,5 +64,50 @@ public class OrderRepository {
 		TypedQuery<Order> query = em.createQuery(cq).setMaxResults(1000);
 		
 		return query.getResultList();
+	}
+	
+	public Order findOrderWithMember(Long orderId) {
+		EntityGraph<?> graph = em.getEntityGraph("Order.withMember");
+		Map<String, Object> hints = new HashMap<String, Object>();
+		hints.put("javax.persistence.fetchgraph", graph);
+		
+		Order order = em.find(Order.class, orderId, hints);
+		
+		return order;
+	}
+	
+	public Order findOrderWithAll(Long orderId) {
+		Map<String, Object> hints = new HashMap<String, Object>();
+		hints.put("javax.persistence.fetchgraph", em.getEntityGraph("Order.withAll"));
+		
+		Order order = em.find(Order.class, orderId, hints);
+		
+		return order;
+	}
+	
+	public Order findOrderWithMemberDynamic(Long orderId) {
+		EntityGraph<Order> graph = em.createEntityGraph(Order.class);
+		graph.addAttributeNodes("member");
+		
+		Map<String, Object> hints = new HashMap<String, Object>();
+		hints.put("javax.persistence.fetchgraph", graph);
+		
+		Order order = em.find(Order.class, orderId, hints);
+		
+		return order;
+	}
+	
+	public Order findOrderWithAllDynamic(Long orderId) {
+		EntityGraph<Order> graph = em.createEntityGraph(Order.class);
+		graph.addAttributeNodes("memeber");
+		Subgraph<OrderItem> orderItems = graph.addSubgraph("orderItems");
+		orderItems.addAttributeNodes("item");
+		
+		Map<String, Object> hints = new HashMap<String, Object>();
+		hints.put("javax.persistence.fetchgraph", graph);
+		
+		Order order = em.find(Order.class, orderId, hints);
+		
+		return order;
 	}
 }

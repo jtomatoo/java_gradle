@@ -25,13 +25,8 @@ dependencies {
     compile 'org.springframework:spring-orm:5.1.1.RELEASE'
     compile 'org.springframework.data:spring-data-jpa:2.1.2.RELEASE'
     compile 'org.hibernate:hibernate-entitymanager:5.4.0.Final'
-    
-    // https://mvnrepository.com/artifact/com.mysema.querydsl/querydsl-apt
-// provided group: 'com.mysema.querydsl', name: 'querydsl-apt', version: '3.7.4'
-    
-    // https://mvnrepository.com/artifact/com.mysema.querydsl/querydsl-jpa
-// compile group: 'com.mysema.querydsl', name: 'querydsl-jpa', version: '3.7.4'
-    
+    compile 'org.hibernate:hibernate-ehcache:5.4.0.Final'
+        
     // compile 'com.mysema.querydsl:querydsl-apt:3.7.4'
     // compile 'com.mysema.querydsl:querydsl-jpa:3.7.4'
     compile 'com.querydsl:querydsl-jpa:4.1.4'

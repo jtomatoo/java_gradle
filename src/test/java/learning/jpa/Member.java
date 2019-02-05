@@ -1,9 +1,17 @@
 package learning.jpa;
 
+import javax.jdo.annotations.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.QueryHint;
 
+@Cacheable
 @Entity
+@NamedQuery(hints=@QueryHint(name="org.hibernate.cacheable", value="true"),
+			name="Member.findByUsername",
+			query="select m.address from Member m where m.name= :username"
+)
 public class Member {
 	
 	@Id

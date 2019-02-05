@@ -72,5 +72,10 @@
                 <prop key="hibernate.hbm2ddl.auto">create</prop>             <!-- DDL 자동 생성 -->
             </props>
         </property>
+        <property name="sharedCacheMode" value="ENABLE_SELECTIVE"/>
+        <property name="hibernate.cache.use_second_level.cache" value="true" />
+        <property name="hibernate.cache.use_query_cache" value="true" />
+        <property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.EhCacheRegionFactory" />
+        <property name="hibernate.generate_statistics" value="true" />
     </bean>
 </beans>
